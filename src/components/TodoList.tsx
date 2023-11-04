@@ -1,46 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-const LOCAL_STORAGE_KEY = "TODOS";
-
-const TodoList = () => {
+const TodoList = ({ todos, addTodo, toggleTodo }) => {
   console.log("Render TodoList");
-
-  const [todos, setTodos] = useState(() => {
-    const value = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (value == null) return [];
-    return JSON.parse(value);
-  });
-
   const [newTodoName, setNewTodoName] = useState("");
 
-  const addTodo = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setTodos((prevTodos) => {
-      return [
-        ...prevTodos,
-        { id: crypto.randomUUID(), name: newTodoName, completed: false },
-      ];
-    });
-
+    addTodo(newTodoName);
     setNewTodoName("");
   };
-
-  const toggleTodo = (id, completed) => {
-    setTodos((prevTodos) => {
-      return prevTodos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, completed };
-        }
-        return todo;
-      });
-    });
-  };
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]);
 
   return (
     <div className="flex-1 border-r p-4">
@@ -55,7 +25,7 @@ const TodoList = () => {
         <button className="bg-gray-400 text-white">Add</button>
       </form>
       <ul>
-        {todos.map((todo) => (
+        {todos?.map((todo) => (
           <li key={todo.id}>
             <label className="flex items-center space-x-1">
               <input
